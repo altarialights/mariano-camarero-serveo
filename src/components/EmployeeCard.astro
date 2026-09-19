@@ -226,6 +226,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    max-width: 100%;
     margin: 0;
     padding: 0.4rem 0.75rem 0.4rem 0.6rem;
     border-radius: 999px;
@@ -235,7 +236,16 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     color: var(--color-brand-ink);
     background: #fff;
     box-shadow: 0 6px 16px -8px rgb(90 30 0 / 0.5);
-    white-space: nowrap;
+  }
+
+  .chip > :global(svg) {
+    flex: none;
+  }
+
+  .chip > span {
+    min-width: 0;
+    line-height: 1.25;
+    text-wrap: balance;
   }
 
   .creator-link {
@@ -471,6 +481,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     .chip {
       font-size: 0.8125rem;
       padding: 0.5rem 0.9rem 0.5rem 0.7rem;
+      white-space: nowrap;
     }
 
     .photo-slot {
