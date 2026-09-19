@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<Layout title="Tarjeta no encontrada" description="Esta tarjeta de contacto no existe.">
+  <main class="grid min-h-screen place-items-center px-6 text-center">
+    <div class="flex flex-col items-center gap-4">
+      <span class="grid size-16 place-items-center rounded-full bg-brand-50 text-brand-ink">
+        <Icon name="contact" size={30} />
+      </span>
+      <h1 class="text-2xl font-bold tracking-tight text-ink">Tarjeta no encontrada</h1>
+      <p class="max-w-xs text-muted">Puede que el enlace haya cambiado. Vuelve a acercar el móvil a la tarjeta NFC.</p>
+    </div>
+  </main>
+</Layout>

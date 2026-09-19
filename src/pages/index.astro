@@ -1,0 +1,17 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
+// Página neutra: no lista empleados a propósito (privacidad).
+---
+
+<Layout title="Tarjeta digital" description="Tarjetas de contacto digitales NFC.">
+  <main class="grid min-h-screen place-items-center px-6 text-center">
+    <div class="flex flex-col items-center gap-4">
+      <span class="grid size-16 place-items-center rounded-full bg-brand text-white">
+        <Icon name="nfc" size={30} />
+      </span>
+      <h1 class="text-2xl font-bold tracking-tight text-ink">Tarjeta de contacto digital</h1>
+      <p class="max-w-xs text-muted">Acerca tu móvil a una tarjeta NFC para ver los datos de contacto.</p>
+    </div>
+  </main>
+</Layout>

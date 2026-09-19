@@ -1,0 +1,207 @@
+---
+import type { Employee } from "../data/employees";
+import { addressLines, emailHref, mapsHref, phoneHref, phoneLabel } from "../lib/employees";
+import Icon, { type IconName } from "./Icon.astro";
+
+interface Props {
+  employee: Employee;
+  /** Retardo base de la animación de entrada (ms). */
+  delay?: number;
+}
+
+const { employee, delay = 0 } = Astro.props;
+
+interface Row {
+  icon: IconName;
+  href: string;
+  label: string;
+  lines: string[];
+  ariaLabel: string;
+  external?: boolean;
+}
+
+const address = addressLines(employee);
+const maps = mapsHref(employee);
+const email = employee.email.trim();
+
+const rows: Row[] = [
+  {
+    icon: "phone",
+    href: phoneHref(employee),
+    label: "Teléfono",
+    lines: [phoneLabel(employee)],
+    ariaLabel: `Llamar al ${phoneLabel(employee)}`,
+  },
+  {
+    icon: "mail",
+    href: emailHref(employee),
+    label: "Email",
+    lines: [email],
+    ariaLabel: `Enviar un email a ${email}`,
+  },
+];
+
+if (address.length && maps) {
+  rows.push({
+    icon: "pin",
+    href: maps,
+    label: "Dirección",
+    lines: address,
+    ariaLabel: `Ver en el mapa: ${address.join(", ")} (se abre en una nueva pestaña)`,
+    external: true,
+  });
+}
+---
+
+<ul class="info" aria-label="Datos de contacto">
+  {
+    rows.map((row, i) => (
+      <li class="reveal" style={`--d:${delay + i * 70}ms`}>
+        <a
+          class="row"
+          href={row.href}
+          aria-label={row.ariaLabel}
+          {...(row.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        >
+          <span class="tile">
+            <Icon name={row.icon} size={20} />
+          </span>
+          <span class="text">
+            <span class="label">{row.label}</span>
+            {row.lines.map((line) => (
+              <span class="value">{line}</span>
+            ))}
+          </span>
+          <Icon name={row.external ? "external" : "chevron"} size={18} class="arrow" />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .info {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .row {
+    --tile: 2.625rem;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: var(--tile) minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.875rem;
+    min-height: var(--row-min, 3.25rem);
+    padding-block: var(--row-pad, 0.5rem);
+    color: var(--color-ink);
+    text-decoration: none;
+    border-radius: 1rem;
+    outline-offset: 2px;
+  }
+
+  /* Separador que arranca después del icono */
+  .info li + li .row::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(var(--tile) + 0.875rem);
+    right: 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  /* Superficie de hover/tap que no desplaza el layout */
+  .row::after {
+    content: "";
+    position: absolute;
+    inset: 0 -0.625rem;
+    border-radius: 1rem;
+    background: var(--color-brand-50);
+    opacity: 0;
+    transform: scale(0.97);
+    transition: opacity 0.25s ease, transform 0.35s var(--ease-out-expo);
+    z-index: -1;
+  }
+
+  .row:hover::after,
+  .row:active::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .tile {
+    display: grid;
+    place-items: center;
+    width: var(--tile);
+    height: var(--tile);
+    border-radius: 50%;
+    color: var(--color-brand-ink);
+    background: var(--color-brand-50);
+    box-shadow: inset 0 0 0 1px rgb(242 89 18 / 0.16);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.45s var(--ease-spring);
+  }
+
+  .row:hover .tile,
+  .row:focus-visible .tile {
+    background: var(--color-brand);
+    color: #fff;
+    transform: scale(1.06) rotate(-6deg);
+  }
+
+  .row:active .tile {
+    transform: scale(0.92);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .label {
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  .value {
+    font-size: 0.96875rem;
+    font-weight: 560;
+    line-height: 1.38;
+    overflow-wrap: anywhere;
+  }
+
+  .value + .value {
+    font-weight: 450;
+    color: var(--color-muted);
+  }
+
+  .row :global(.arrow) {
+    color: var(--color-brand-ink);
+    opacity: 0.5;
+    transition: transform 0.35s var(--ease-out-expo), opacity 0.25s ease;
+  }
+
+  .row:hover :global(.arrow),
+  .row:focus-visible :global(.arrow) {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  /* Pantallas bajas: las etiquetas pasan a ser solo para lectores de pantalla */
+  @media (max-width: 1023.98px) and (max-height: 760px), (min-width: 1024px) and (max-height: 780px) {
+    .label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+</style>

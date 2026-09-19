@@ -1,0 +1,106 @@
+---
+import type { Employee } from "../data/employees";
+import { hasPhoto, initials } from "../lib/employees";
+
+interface Props {
+  employee: Employee;
+}
+
+const { employee } = Astro.props;
+const photoExists = hasPhoto(employee);
+
+if (!photoExists && employee.photo) {
+  console.warn(
+    `[cards] Falta la foto de ${employee.fullName}: public${employee.photo} (se muestra un monograma provisional).`,
+  );
+}
+---
+
+<figure class="photo">
+  <div class="frame">
+    {
+      photoExists ? (
+        <img
+          src={employee.photo}
+          alt={`Fotografía de ${employee.fullName}`}
+          width="640"
+          height="640"
+          fetchpriority="high"
+          decoding="async"
+        />
+      ) : (
+        <div class="monogram" role="img" aria-label={`Iniciales de ${employee.fullName}`}>
+          <span aria-hidden="true">{initials(employee)}</span>
+          {import.meta.env.DEV && <small class="pending">Foto pendiente</small>}
+        </div>
+      )
+    }
+  </div>
+</figure>
+
+<style>
+  .photo {
+    position: relative;
+    width: var(--photo);
+    aspect-ratio: 1;
+    margin: 0;
+    flex: none;
+  }
+
+  /* Anillo blanco + halo pálido: el mismo recorte de la tarjeta física */
+  .frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    isolation: isolate;
+    background: radial-gradient(circle at 30% 25%, #ff7a36, var(--color-brand) 55%, var(--color-brand-600));
+    box-shadow:
+      0 0 0 var(--ring, 6px) #fff,
+      0 0 0 calc(var(--ring, 6px) + var(--halo, 12px)) rgb(255 255 255 / 0.2),
+      0 26px 50px -20px rgb(110 36 0 / 0.5);
+    animation: bloom 1s var(--ease-out-expo) 120ms both;
+  }
+
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+
+  .photo:hover .frame img {
+    transform: scale(1.045);
+  }
+
+  .monogram {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.5em;
+    color: #fff;
+    background: repeating-radial-gradient(circle at 50% 50%, transparent 0 10px, rgb(255 255 255 / 0.08) 10px 11px);
+  }
+
+  .monogram span {
+    font-size: calc(var(--photo) * 0.34);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .pending {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.3em 0.75em;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.22);
+  }
+
+</style>

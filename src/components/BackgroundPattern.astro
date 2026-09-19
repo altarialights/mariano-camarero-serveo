@@ -1,0 +1,68 @@
+---
+/**
+ * Patrón decorativo de la zona blanca: anillos concéntricos que salen de la
+ * esquina inferior (eco de las ondas NFC) + una micro-retícula de puntos.
+ * Solo SVG/CSS, sin imágenes externas. Puramente decorativo.
+ */
+const rings = Array.from({ length: 7 }, (_, i) => 70 + i * 26);
+---
+
+<div class="bg" aria-hidden="true">
+  <svg class="rings" viewBox="0 0 480 480" focusable="false">
+    {rings.map((r) => <circle cx="240" cy="240" r={r} />)}
+  </svg>
+  <div class="dots"></div>
+</div>
+
+<style>
+  .bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    animation: fade 1.2s ease both;
+  }
+
+  .rings {
+    position: absolute;
+    right: -42%;
+    bottom: -26%;
+    width: min(130vw, 40rem);
+    height: auto;
+    fill: none;
+    stroke: var(--color-brand);
+    stroke-width: 1;
+    opacity: 0.09;
+  }
+
+  .dots {
+    position: absolute;
+    right: 0;
+    top: 38%;
+    width: 9rem;
+    height: 9rem;
+    background: radial-gradient(circle, rgb(242 89 18 / 0.35) 1.1px, transparent 1.6px) 0 0 / 14px 14px;
+    -webkit-mask-image: radial-gradient(circle at 100% 50%, #000, transparent 70%);
+    mask-image: radial-gradient(circle at 100% 50%, #000, transparent 70%);
+    opacity: 0.55;
+  }
+
+  @media (min-width: 1024px), (min-width: 768px) and (orientation: landscape) {
+    .rings {
+      right: -14rem;
+      bottom: -14rem;
+      width: 46rem;
+      opacity: 0.08;
+    }
+
+    .dots {
+      top: 2.5rem;
+      right: 2.5rem;
+      width: 12rem;
+      height: 12rem;
+      -webkit-mask-image: radial-gradient(circle at 100% 0%, #000, transparent 70%);
+      mask-image: radial-gradient(circle at 100% 0%, #000, transparent 70%);
+    }
+  }
+</style>

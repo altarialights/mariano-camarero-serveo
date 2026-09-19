@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import EmployeeCard from "../../components/EmployeeCard.astro";
+import type { Employee } from "../../data/employees";
+import Layout from "../../layouts/Layout.astro";
+import { allEmployees, clean } from "../../lib/employees";
+
+/** Una página estática por cada objeto de employees.ts → /{companySlug}/{id} */
+export const getStaticPaths = (() =>
+  allEmployees.map((employee) => ({
+    params: { company: employee.companySlug, slug: employee.id },
+    props: { employee },
+  }))) satisfies GetStaticPaths;
+
+interface Props {
+  employee: Employee;
+}
+
+const { employee } = Astro.props;
+const title = `${employee.fullName.trim()} · ${employee.company.trim()}`;
+const description = [employee.position, clean(employee.department), employee.company]
+  .map((part) => clean(part))
+  .filter(Boolean)
+  .join(" · ");
+---
+
+<Layout title={title} description={`Tarjeta de contacto digital de ${employee.fullName.trim()}. ${description}.`}>
+  <EmployeeCard employee={employee} />
+</Layout>

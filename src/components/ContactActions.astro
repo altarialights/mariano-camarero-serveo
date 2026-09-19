@@ -1,0 +1,278 @@
+---
+import type { Employee } from "../data/employees";
+import { emailHref, phoneHref, vcardPath } from "../lib/employees";
+import Icon from "./Icon.astro";
+
+interface Props {
+  employee: Employee;
+  /** Retardo base de la animación de entrada (ms). */
+  delay?: number;
+}
+
+const { employee, delay = 0 } = Astro.props;
+---
+
+<div class="actions">
+  <div class="secondary reveal" style={`--d:${delay}ms`}>
+    <a class="btn" href={phoneHref(employee)} aria-label={`Llamar a ${employee.fullName}`}>
+      <Icon name="phone" size={19} />
+      <span>Llamar</span>
+    </a>
+    <a class="btn" href={emailHref(employee)} aria-label={`Enviar un email a ${employee.fullName}`}>
+      <Icon name="mail" size={19} />
+      <span>Email</span>
+    </a>
+  </div>
+
+  <div class="reveal" style={`--d:${delay + 120}ms; --reveal: lift`}>
+    <a class="cta" href={vcardPath(employee)} data-save-contact aria-describedby="save-hint">
+      <span class="cta-icon">
+        <Icon name="contact" size={22} class="i-contact" />
+        <Icon name="check" size={22} class="i-check" />
+      </span>
+      <span class="cta-text">
+        <span class="t-default">Guardar contacto</span>
+        <span class="t-done" aria-hidden="true">Abriendo contacto…</span>
+      </span>
+    </a>
+  </div>
+
+  <p id="save-hint" class="hint reveal" style={`--d:${delay + 260}ms`}>
+    Se añade a la agenda de tu móvil (iPhone y Android)
+  </p>
+  <p class="sr-only" role="status" aria-live="polite" data-save-status></p>
+</div>
+
+<script>
+  // Feedback táctil al guardar: el archivo .vcf se abre de forma nativa,
+  // aquí solo confirmamos visualmente (y a lectores de pantalla) la acción.
+  const cta = document.querySelector<HTMLAnchorElement>("[data-save-contact]");
+  const status = document.querySelector<HTMLElement>("[data-save-status]");
+  let timer: number | undefined;
+
+  cta?.addEventListener("click", () => {
+    cta.classList.add("is-done");
+    if (status) status.textContent = "Abriendo la tarjeta de contacto";
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      cta.classList.remove("is-done");
+      if (status) status.textContent = "";
+    }, 2800);
+  });
+</script>
+
+<style>
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--actions-gap, 0.75rem);
+  }
+
+  @keyframes lift {
+    from { opacity: 0; transform: translate3d(0, 22px, 0) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---------------- Acciones secundarias ---------------- */
+  .secondary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: var(--btn-h, 3rem);
+    padding-inline: 1rem;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 620;
+    color: var(--color-ink);
+    text-decoration: none;
+    background: #fff;
+    box-shadow: inset 0 0 0 1.5px rgb(242 89 18 / 0.24);
+    transition:
+      background-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.4s var(--ease-spring);
+  }
+
+  .btn :global(svg) {
+    color: var(--color-brand-ink);
+    transition: transform 0.45s var(--ease-spring);
+  }
+
+  .btn:hover {
+    background: var(--color-brand-50);
+    box-shadow: inset 0 0 0 1.5px rgb(242 89 18 / 0.5);
+  }
+
+  .btn:hover :global(svg) {
+    transform: rotate(-10deg) scale(1.08);
+  }
+
+  .btn:active {
+    transform: scale(0.96);
+  }
+
+  /* ---------------- CTA principal ---------------- */
+  .cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: var(--cta-h, 3.875rem);
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+    border-radius: 999px;
+    color: #fff;
+    text-decoration: none;
+    /* 19px + bold: texto grande según WCAG → contraste AA ≥ 3:1 */
+    font-size: 1.1875rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    background: linear-gradient(120deg, #f86a22 0%, var(--color-brand) 42%, var(--color-brand-600) 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      0 14px 30px -14px rgb(214 70 4 / 0.9);
+    transition: transform 0.45s var(--ease-spring);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Halo que crece en hover (solo opacity/transform) */
+  .cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(120% 140% at 20% 0%, rgb(255 255 255 / 0.28), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  /* Brillo que recorre el botón al aparecer y en hover */
+  .cta::after {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% 0;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.38), transparent);
+    transform: translateX(-150%) skewX(-18deg);
+    animation: sheen 1.1s var(--ease-out-expo) 1.5s both;
+    pointer-events: none;
+  }
+
+  @keyframes sheen {
+    to { transform: translateX(320%) skewX(-18deg); }
+  }
+
+  .cta:hover {
+    transform: translateY(-2px);
+  }
+
+  .cta:hover::before {
+    opacity: 1;
+  }
+
+  .cta:hover::after {
+    animation: sheen 0.9s var(--ease-out-expo) both;
+  }
+
+  .cta:active {
+    transform: scale(0.97);
+    transition-duration: 0.12s;
+  }
+
+  .cta:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  .cta-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: calc(var(--cta-h, 3.875rem) - 1rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.2);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28);
+    transition: transform 0.45s var(--ease-spring), background-color 0.3s ease;
+  }
+
+  .cta-icon :global(svg) {
+    grid-area: 1 / 1;
+    transition: transform 0.45s var(--ease-spring), opacity 0.25s ease;
+  }
+
+  .cta-icon :global(.i-check) {
+    opacity: 0;
+    transform: scale(0.4) rotate(-30deg);
+  }
+
+  .cta:hover .cta-icon {
+    transform: rotate(-8deg) scale(1.05);
+  }
+
+  .cta-text {
+    display: grid;
+    flex: 1;
+    text-align: center;
+    margin-right: calc(var(--cta-h, 3.875rem) - 2.5rem);
+  }
+
+  .cta-text > span {
+    grid-area: 1 / 1;
+    transition: transform 0.45s var(--ease-out-expo), opacity 0.3s ease;
+  }
+
+  .t-done {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+
+  /* Estado tras pulsar */
+  .cta:global(.is-done) .cta-icon {
+    background: #fff;
+    color: var(--color-brand-600);
+  }
+  .cta:global(.is-done) .cta-icon :global(.i-contact) {
+    opacity: 0;
+    transform: scale(0.4) rotate(30deg);
+  }
+  .cta:global(.is-done) .cta-icon :global(.i-check) {
+    opacity: 1;
+    transform: none;
+  }
+  .cta:global(.is-done) .t-default {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+  .cta:global(.is-done) .t-done {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hint {
+    margin: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+
+  @media (max-width: 1023.98px) and (max-height: 760px), (min-width: 1024px) and (max-height: 700px) {
+    .hint {
+      display: none;
+    }
+  }
+</style>
