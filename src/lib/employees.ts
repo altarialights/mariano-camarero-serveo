@@ -63,7 +63,17 @@ export const vcardPath = (e: Employee) => `/${e.companySlug}/${e.id}.vcf`;
 /** Teléfono apto para `tel:` (solo + y dígitos). */
 export const phoneHref = (e: Employee) => `tel:${e.phone.replace(/[^\d+]/g, "")}`;
 export const phoneLabel = (e: Employee) => clean(e.phoneDisplay) ?? e.phone;
-export const emailHref = (e: Employee) => `mailto:${e.email.trim()}`;
+
+/** Abre una redacción nueva en Gmail web sin depender del protocolo `mailto:`. */
+export function emailHref(e: Employee): string {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: e.email.trim(),
+    su: `Hola ${e.firstName.trim()}!`,
+  });
+  return `https://mail.google.com/mail/?${params.toString()}`;
+}
 
 export function initials(e: Employee): string {
   const first = e.firstName.trim()[0] ?? "";

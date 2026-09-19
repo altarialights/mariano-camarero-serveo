@@ -18,7 +18,13 @@ const { employee, delay = 0 } = Astro.props;
       <Icon name="phone" size={19} />
       <span>Llamar</span>
     </a>
-    <a class="btn" href={emailHref(employee)} aria-label={`Enviar un email a ${employee.fullName}`}>
+    <a
+      class="btn"
+      href={emailHref(employee)}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Enviar un email a ${employee.fullName} (se abre en una nueva pestaña)`}
+    >
       <Icon name="mail" size={19} />
       <span>Email</span>
     </a>
