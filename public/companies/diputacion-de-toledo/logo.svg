@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-labelledby="title">
+  <title id="title">Toledo Diputación</title>
+  <g fill="#0d4b40">
+    <path d="M6 8h42v40H6zm84 0h42v40H90zm84 0h42v40h-42zM48 48h42v94H48zm84 0h42v94h-42z"/>
+    <text x="248" y="72" font-family="Arial,Helvetica,sans-serif" font-size="58" font-weight="800" letter-spacing="1">TOLEDO</text>
+    <text x="248" y="124" font-family="Arial,Helvetica,sans-serif" font-size="39" font-weight="400" letter-spacing="3">Diputación</text>
+  </g>
+</svg>

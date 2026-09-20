@@ -16,7 +16,9 @@ export const getStaticPaths = (() =>
 
 export const GET: APIRoute<{ employee: Employee }> = async ({ props, site }) => {
   const { employee } = props;
-  const cardUrl = site ? new URL(cardPath(employee), site).href : undefined;
+  const cardUrl = employee.includeWebsiteInVCard === false
+    ? undefined
+    : site ? new URL(cardPath(employee), site).href : undefined;
   const body = await buildVCard(employee, cardUrl);
 
   return new Response(body, {

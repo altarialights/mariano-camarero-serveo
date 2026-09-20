@@ -9,6 +9,8 @@
   --color-brand-ink: #b23e00;    /* naranja para texto sobre blanco (AA 5.6:1) */
   --color-brand-50: #fff3ec;
   --color-brand-100: #ffe4d5;
+  --color-brand-highlight: #ff6e24;
+  --brand-shadow-rgb: 90 30 0;
   --color-ink: #1d1a18;          /* negro cálido */
   --color-muted: #5f5853;        /* gris cálido (AA 6.9:1) */
   --color-line: #efe8e3;

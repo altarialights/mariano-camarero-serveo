@@ -55,8 +55,22 @@ export interface Employee {
      */
     photo?: string;
 
-    /** Ruta del logo dentro de /public. Se muestra siempre en blanco sobre naranja. */
+    /** Ruta del logo dentro de /public. */
     companyLogo: string;
+
+    /** Colores corporativos opcionales. Si faltan, se usa la paleta de Serveo. */
+    brand?: {
+        color: string;
+        dark: string;
+        ink: string;
+        tint: string;
+        tintSoft: string;
+        highlight: string;
+        shadow: string;
+    };
+
+    /** `false` evita incluir la web de la tarjeta digital en el contacto descargado. */
+    includeWebsiteInVCard?: boolean;
 }
 
 export const employees: Employee[] = [
@@ -88,5 +102,44 @@ export const employees: Employee[] = [
         photo: "/employees/mariano-camarero.webp",
 
         companyLogo: "/companies/serveo/logo.png",
+    },
+    {
+        id: "jose-eugenio-del-castillo",
+        companySlug: "diputacion-de-toledo",
+        company: "Diputación de Toledo",
+
+        firstName: "José Eugenio",
+        lastName: "del Castillo Fernández-Pacheco",
+        fullName: "José Eugenio del Castillo Fernández-Pacheco",
+
+        position: "Diputado delegado",
+        department: "Contratación y Patrimonio",
+
+        phone: "+34660744985",
+        phoneDisplay: "660 74 49 85",
+
+        email: "jedelcastillo@diputoledo.es",
+
+        address: {
+            street: "Plaza de la Merced, 4",
+            postalCode: "",
+            city: "Toledo",
+            country: "España",
+        },
+
+        photo: "/employees/jose-eugenio-del-castillo.webp",
+        companyLogo: "/companies/diputacion-de-toledo/logo.svg",
+
+        brand: {
+            color: "#0d4b40",
+            dark: "#083c34",
+            ink: "#0d4b40",
+            tint: "#dcece8",
+            tintSoft: "#edf6f3",
+            highlight: "#176457",
+            shadow: "13 75 64",
+        },
+
+        includeWebsiteInVCard: false,
     },
 ];

@@ -55,11 +55,11 @@ if (!photoExists && employee.photo) {
     border-radius: 50%;
     overflow: hidden;
     isolation: isolate;
-    background: radial-gradient(circle at 30% 25%, #ff7a36, var(--color-brand) 55%, var(--color-brand-600));
+    background: radial-gradient(circle at 30% 25%, var(--color-brand-highlight), var(--color-brand) 55%, var(--color-brand-600));
     box-shadow:
       0 0 0 var(--ring, 6px) #fff,
       0 0 0 calc(var(--ring, 6px) + var(--halo, 12px)) rgb(255 255 255 / 0.2),
-      0 26px 50px -20px rgb(110 36 0 / 0.5);
+      0 26px 50px -20px rgb(var(--brand-shadow-rgb) / 0.5);
     animation: bloom 1s var(--ease-out-expo) 120ms both;
   }
 

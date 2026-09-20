@@ -24,6 +24,10 @@ const description = [employee.position, clean(employee.department), employee.com
   .join(" · ");
 ---
 
-<Layout title={title} description={`Tarjeta de contacto digital de ${employee.fullName.trim()}. ${description}.`}>
+<Layout
+  title={title}
+  description={`Tarjeta de contacto digital de ${employee.fullName.trim()}. ${description}.`}
+  themeColor={employee.brand?.color}
+>
   <EmployeeCard employee={employee} />
 </Layout>

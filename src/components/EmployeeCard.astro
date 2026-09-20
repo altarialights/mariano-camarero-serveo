@@ -19,6 +19,10 @@ const department = clean(employee.department);
 const first = employee.firstName.trim();
 const last = employee.lastName.trim();
 const splitName = employee.fullName.trim() === `${first} ${last}`;
+const brand = employee.brand;
+const brandVars = brand
+  ? `--color-brand:${brand.color};--color-brand-600:${brand.dark};--color-brand-ink:${brand.ink};--color-brand-50:${brand.tintSoft};--color-brand-100:${brand.tint};--color-brand-highlight:${brand.highlight};--brand-shadow-rgb:${brand.shadow}`
+  : undefined;
 
 /* ------------------------------------------------------------------ */
 /*  Masa naranja: la curva en S de la tarjeta física, en un viewBox    */
@@ -46,7 +50,7 @@ const svgMask = (d: string) =>
 const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.desktop)}`;
 ---
 
-<main class="card">
+<main class="card" style={brandVars}>
   <BackgroundPattern />
 
   <header class="hero">
@@ -162,7 +166,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     z-index: -1;
     background:
       repeating-radial-gradient(circle at 0 0, transparent 0 30px, rgb(255 255 255 / 0.075) 30px 31px),
-      radial-gradient(130% 110% at 0% 0%, #ff6e24 0%, var(--color-brand) 48%, var(--color-brand-600) 100%);
+      radial-gradient(130% 110% at 0% 0%, var(--color-brand-highlight) 0%, var(--color-brand) 48%, var(--color-brand-600) 100%);
     -webkit-mask: var(--mask-m) 0 0 / 100% 100% no-repeat;
     mask: var(--mask-m) 0 0 / 100% 100% no-repeat;
     transform-origin: 0 0;
@@ -212,7 +216,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     padding: 0.55rem 0.9rem;
     border-radius: 1rem;
     background: #fff;
-    box-shadow: 0 10px 24px -12px rgb(90 30 0 / 0.55);
+    box-shadow: 0 10px 24px -12px rgb(var(--brand-shadow-rgb) / 0.55);
   }
 
   .logo {
@@ -235,7 +239,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
     letter-spacing: 0.02em;
     color: var(--color-brand-ink);
     background: #fff;
-    box-shadow: 0 6px 16px -8px rgb(90 30 0 / 0.5);
+    box-shadow: 0 6px 16px -8px rgb(var(--brand-shadow-rgb) / 0.5);
   }
 
   .chip > :global(svg) {
@@ -457,7 +461,7 @@ const massVars = `--mask-m:${svgMask(mass.mobile)};--mask-d:${svgMask(mass.deskt
       mask-image: var(--mask-d);
       background:
         repeating-radial-gradient(circle at 0 0, transparent 0 44px, rgb(255 255 255 / 0.07) 44px 45px),
-        radial-gradient(120% 100% at 0% 0%, #ff6e24 0%, var(--color-brand) 50%, var(--color-brand-600) 100%);
+        radial-gradient(120% 100% at 0% 0%, var(--color-brand-highlight) 0%, var(--color-brand) 50%, var(--color-brand-600) 100%);
     }
 
     .echo-m { display: none; }
